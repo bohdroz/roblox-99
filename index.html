@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="uk"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Script.hub</title>    <!-- Підключення Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>    <!-- Підключення іконок (Heroicons) --><script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">        <style>        /* Основний фон та шрифт */        body {            font-family: 'Inter', sans-serif;            background-color: #0f172a; /* Slate 900 */            color: #ffffff;        }        /* Стилізація модальних вікон */        .modal-content {            background-color: #1e293b; /* Slate 800 */            border: 1px solid #475569; /* Slate 600 рамка */            position: relative;            z-index: 51;        }        /* Стилізація поля вводу */        .nickname-input {            background-color: #0f172a;            border: 1px solid #475569;            color: white;            caret-color: white;        }        .nickname-input::placeholder {            color: #94a3b8;        }        .nickname-input:focus {            outline: none;            border-color: #64748b;            box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.3);        }        /* Стилізація скролбару */        * {            scrollbar-width: thin;            scrollbar-color: #475569 #0f172a;        }        ::-webkit-scrollbar {            width: 8px;        }        ::-webkit-scrollbar-track {            background: #0f172a;        }        ::-webkit-scrollbar-thumb {            background-color: #475569;            border-radius: 20px;            border: 3px solid #0f172a;        }        /* Анімація обертання для зображення Roblox */        @keyframes spin {            0% { transform: rotate(0deg); }            100% { transform: rotate(360deg); }        }        .roblox-spinner {            animation: spin 1s linear infinite;        }        /* Анімація неонового сяйва для кнопок */        .neon-button-base {            position: relative;            z-index: 1;            transition: all 0.3s ease-in-out;        }        .neon-button-base:hover {             transform: translateY(-2px);        }        /* Синя підсвітка (для "Get Script") */        .neon-blue {            box-shadow: 0 0 5px #03e9f4,                        0 0 10px #03e9f4,                        0 0 15px #03e9f4,                        0 0 20px #03e9f4;        }        .neon-blue:hover {            box-shadow: 0 0 10px #03e9f4,                        0 0 20px #03e9f4,                        0 0 30px #03e9f4,                        0 0 40px #03e9f4;        }        /* Зелена підсвітка (для "OK") */        .neon-green {            box-shadow: 0 0 5px #00ff7f,                        0 0 10px #00ff7f,                        0 0 15px #00ff7f,                        0 0 20px #00ff7f;        }        .neon-green:hover {            box-shadow: 0 0 10px #00ff7f,                        0 0 20px #00ff7f,                        0 0 30px #00ff7f,                        0 0 40px #00ff7f;        }        /* Рожева підсвітка (для "Got It") */        .neon-pink {            box-shadow: 0 0 5px #f54291,                        0 0 10px #f54291,                        0 0 15px #f54291,                        0 0 20px #f54291;        }        .neon-pink:hover {            box-shadow: 0 0 10px #f54291,                        0 0 20px #f54291,                        0 0 30px #f54291,                        0 0 40px #f54291;        }        /* Анімація тексту "CONGRATULATIONS!" */        @keyframes neon-glow {            0%, 100% {                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #03e9f4, 0 0 30px #03e9f4, 0 0 40px #03e9f4, 0 0 50px #03e9f4, 0 0 60px #03e9f4;            }            50% {                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #03e9f4, 0 0 40px #03e9f4, 0 0 50px #03e9f4, 0 0 60px #03e9f4, 0 0 70px #03e9f4;            }        }        .success-glow {            animation: neon-glow 1.5s ease-in-out infinite alternate;        }        /* Стилі для неонових салютів */        .fireworks-container {            position: fixed;            top: 0;            left: 0;            width: 100%;            height: 100%;            pointer-events: none;            overflow: hidden;            z-index: 1000;            display: none;        }        .firework {            position: absolute;            width: 5px;            height: 5px;            background-color: currentColor;            border-radius: 50%;            opacity: 0;            animation: firework-burst 0.8s ease-out forwards;        }        @keyframes firework-burst {            0% {                transform: scale(0.2) translate(0, 0);                opacity: 1;                filter: blur(0px);            }            100% {                transform: scale(1.5) translate(var(--dx), var(--dy));                opacity: 0;                filter: blur(3px);            }        }        .firework-origin {            position: absolute;            background-color: white;            border-radius: 50%;            opacity: 0;            animation: firework-flash 0.5s ease-out forwards;        }        @keyframes firework-flash {            0% { transform: scale(0); opacity: 1; }            50% { transform: scale(1); opacity: 0.8; }            100% { transform: scale(0); opacity: 0; }        }        /* Стилі для горизонтального прокручування */        .horizontal-scroll-container {            scroll-snap-type: x mandatory;            -webkit-overflow-scrolling: touch;            scroll-behavior: smooth;        }        .script-card-wrapper {            scroll-snap-align: start;        }    </style></head><body class="flex justify-center min-h-screen p-4">
+    <!-- Головний контейнер додатку --><div class="w-full max-w-md mx-auto">
+        <!-- Хедер --><header class="flex justify-between items-center py-4">            <button id="back-btn" class="text-white hover:text-gray-300 hidden transition" onclick="showHomeScreen()">
+                <ion-icon name="arrow-back-outline" class="text-3xl"></ion-icon>
+            </button>
+            <h1 class="text-3xl font-bold text-white" id="main-title">Script.hub</h1>
+            <nav class="flex space-x-5 text-gray-300">
+                <a href="#" class="hover:text-white">Home</a>
+                <a href="#" class="hover:text-white">Exploits</a>
+                <a href="#" class="hover:text-white">Tools</a>
+            </nav>
+        </header>
+        <!-- ОСНОВНИЙ КОНТЕНТ (Home Screen) --><main id="home-screen">            <section class="my-6">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">POPULAR SCRIPTS</h2>
+                <div class="horizontal-scroll-container flex space-x-4 overflow-x-auto pb-4">
+                    
+                    <!-- Картка 1: Steal a Brainrot -->
+                    <div class="script-card-wrapper flex-shrink-0 w-[calc(100vw-32px)] sm:w-[350px]">
+                        <div class="bg-[#1e293b] border border-[#475569] rounded-xl shadow-lg overflow-hidden">
+                            <img src="https://tr.rbxcdn.com/180DAY-a5434f50e5846e446aab631fbf0a92e7/768/432/Image/Webp/noFilter"
+                                  alt="Steal a Brainrot"
+                                  class="w-full h-48 object-contain"
+                                 onerror="this.src='https://placehold.co/600x300/0f172a/ffffff?text=Image+Error'">
+                            <div class="p-5">
+                                <h3 class="text-2xl font-bold text-white mb-2">Steal a Brainrot</h3>
+                                <p class="text-gray-300 mb-4 text-sm min-h-[48px]">
+                                    Powerful multi-hack script: Includes Auto Money Farm, Speed/Fly hacks, Asset Teleporter, and advanced Anti-Ban features.
+                                </p>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 neon-button-base neon-blue"
+                                        onclick="showScriptsDetail('Steal a Brainrot', 'stealBrainrot')">
+                                    View Scripts
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Картка 2: Grow a Garden -->
+                    <div class="script-card-wrapper flex-shrink-0 w-[calc(100vw-32px)] sm:w-[350px]">
+                        <div class="bg-[#1e293b] border border-[#475569] rounded-xl shadow-lg overflow-hidden">
+                            <img src="https://i.ytimg.com/vi/DwQjlCmvXOo/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLC663T0eAUTj7WJJGVxJ4aE7S9jpg"
+                                  alt="Grow a Garden"
+                                  class="w-full h-48 object-contain"
+                                 onerror="this.src='https://placehold.co/600x300/0f172a/ffffff?text=Image+Error'">
+                            <div class="p-5">
+                                <h3 class="text-2xl font-bold text-white mb-2">Grow a Garden</h3>
+                                <p class="text-gray-300 mb-4 text-sm min-h-[48px]">
+                                    Best seeds to plant, auto plant, auto buy, auto sell, auto collect, infinite seeds, tools to use, and ways to grow your farm faster.
+                                </p>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 neon-button-base neon-blue"
+                                        onclick="showScriptsDetail('Grow a Garden', 'growGarden')">
+                                    View Scripts
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Картка 3: 99 Nights in the Forest (Переміщена в кінець) -->
+                    <div class="script-card-wrapper flex-shrink-0 w-[calc(100vw-32px)] sm:w-[350px]" id="card-99-nights">
+                        <div class="bg-[#1e293b] border border-[#475569] rounded-xl shadow-lg overflow-hidden">
+                            <img src="https://online-games-free.ru/wp-content/uploads/2025/08/skript-na-99-nochey-v-lesu.jpg"
+                                  alt="99 Nights in the Forest"
+                                  class="w-full h-48 object-contain"
+                                 onerror="this.src='https://placehold.co/600x300/0f172a/ffffff?text=Image+Error'">
+                            <div class="p-5">
+                                <h3 class="text-2xl font-bold text-white mb-2">99 Nights in the Forest</h3>
+                                <p class="text-gray-300 mb-4 text-sm min-h-[48px]">
+                                    Premium script with essential features: Kill Aura, Auto Farm, Auto Fill Hunger, Anti-Fall Damage, and comprehensive ESP functions.
+                                </p>
+                                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 neon-button-base neon-blue"
+                                        onclick="showScriptsDetail('99 Nights in the Forest', '99Nights')">
+                                    View Scripts
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+        <!-- СТОРІНКА ДЕТАЛЕЙ СКРИПТІВ (Прихована за замовчуванням) --><div id="scripts-detail-screen" class="hidden">            <h2 class="text-xl font-bold text-white mt-4 mb-6" id="detail-title"></h2>
+            <div class="grid grid-cols-2 gap-4" id="scripts-grid">
+                <!-- Скрипти будуть додані тут JavaScript'ом -->
+            </div>
+        </div>
+    </div>
+    <!-- Модальні вікна (поверх всього) --><div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center p-4" style="z-index: 50;">
+        <!-- 1. Модальне вікно "Connect" --><div id="connect-modal" class="modal-content w-full max-w-sm rounded-lg p-6 text-center hidden">            <h2 class="text-xl font-bold text-white mb-2">Connect The Script</h2>
+            <p class="text-gray-300 mb-4">Enter your nickname to connect the script.</p>
+            <input 
+                id="nickname-input"
+                type="text" 
+                placeholder="Enter nickname"
+                class="nickname-input w-full rounded-lg p-3 text-center mb-4">
+            <button id="ok-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 neon-button-base neon-green"
+                    onclick="handleOkClick()">
+                OK
+            </button>
+        </div>
+        <!-- 2. Модальне вікно "Loading" --><div id="loading-modal" class="modal-content w-full max-w-sm rounded-lg p-8 text-center hidden">            <img src="https://i.ibb.co/fdTcCV1g/CITYPNG-COM-HD-Roblox-White-Symbol-Sign-Icon-Logo-PNG-2000x2000.png"
+                  alt="Roblox Loading"
+                  class="roblox-spinner mx-auto h-16 w-16">
+        </div>
+        <!-- 3. Модальне вікно "Success" --><div id="success-modal" class="modal-content w-full max-w-sm rounded-lg p-6 text-center hidden">            <h2 class="text-3xl font-bold text-white mb-3 success-glow uppercase">CONGRATULATIONS!</h2>
+            <p class="text-gray-300 mb-5" id="success-message">The script has been successfully connected to your account</p>
+            <button id="got-it-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 neon-button-base neon-pink"
+                    onclick="handleGotItClick()">
+                Got It
+            </button>
+        </div>
+    </div>
+    <!-- Контейнер для салютів --><div id="fireworks-container" class="fireworks-container"></div>
+    <script>        // --- ДАНІ СКРИПТІВ ---
+        const allScriptsData = {
+            '99Nights': [
+                { name: "Kill Aura Pro", desc: "Instantly eliminates all enemies in range.", color: "red", neonClass: "neon-pink", img: "https://i.postimg.cc/SR0VmNq9/unnamed.jpg", id: "kaura" },
+                { name: "Auto Farm V2", desc: "Automated farming of resources and XP.", color: "green", neonClass: "neon-green", img: "https://i.postimg.cc/NFp4m8md/unnamed-(1).jpg", id: "afarm" },
+                { name: "Hunger Bypass", desc: "Disables hunger and thirst mechanics.", color: "blue", neonClass: "neon-blue", img: "https://i.postimg.cc/dDcqRdFH/unnamed-(2).jpg", id: "hbp" },
+                { name: "Night Vision", desc: "Perfect visibility in dark areas.", color: "yellow", neonClass: "neon-pink", img: "https://i.postimg.cc/0NKP4cNQ/unnamed-(3).jpg", id: "nvis" }
+            ],
+            'stealBrainrot': [],
+            'growGarden': []
+        };
+        // --- DOM ЕЛЕМЕНТИ ---
+        const homeScreen = document.getElementById('home-screen');
+        const scriptsDetailScreen = document.getElementById('scripts-detail-screen');
+        const detailTitle = document.getElementById('detail-title');
+        const scriptsGrid = document.getElementById('scripts-grid');
+        const backBtn = document.getElementById('back-btn');
+        const overlay = document.getElementById('modal-overlay');
+        const connectModal = document.getElementById('connect-modal');
+        const loadingModal = document.getElementById('loading-modal');
+        const successModal = document.getElementById('success-modal');
+        const nicknameInput = document.getElementById('nickname-input');
+        const fireworksContainer = document.getElementById('fireworks-container');
+        const successMessage = document.getElementById('success-message');
+        let currentScriptNameForModal = ''; // Зберігає назву скрипту для модального вікна
+        // --- УПРАВЛІННЯ СТОРІНКАМИ ---
+        function showHomeScreen() {
+            homeScreen.classList.remove('hidden');
+            scriptsDetailScreen.classList.add('hidden');
+            backBtn.classList.add('hidden');
+        }
+        function showScriptsDetail(gameName, scriptId) {
+            homeScreen.classList.add('hidden');
+            scriptsDetailScreen.classList.remove('hidden');
+            backBtn.classList.remove('hidden');
+            detailTitle.textContent = `${gameName} - Scripts`;
+            renderScripts(scriptId);
+        }
+        function renderScripts(scriptId) {
+            scriptsGrid.innerHTML = ''; // Очистити сітку
+            const scripts = allScriptsData[scriptId];
+            if (!scripts || scripts.length === 0) {
+                scriptsGrid.innerHTML = '<p class="col-span-2 text-center text-gray-400">Scripts for this game are coming soon!</p>';
+                return;
+            }
+            scripts.forEach(script => {
+                const card = document.createElement('div');
+                card.className = `bg-[#1e293b] border border-[#475569] rounded-xl shadow-lg overflow-hidden transition duration-300 hover:scale-[1.02]`;
+                card.innerHTML = `
+                    <img src="${script.img}" alt="${script.name}" class="w-full h-32 object-cover" onerror="this.src='https://placehold.co/300x150/0f172a/ffffff?text=Image+Error'">
+                    <div class="p-3">
+                        <h4 class="text-lg font-bold text-white mb-1">${script.name}</h4>
+                        <p class="text-gray-400 text-xs mb-3 min-h-[40px]">${script.desc}</p>
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition duration-200 neon-button-base ${script.neonClass}"
+                                onclick="handleGetScriptClick('${script.name}')">
+                            Get Script
+                        </button>
+                    </div>
+                `;
+                scriptsGrid.appendChild(card);
+            });
+        }
+        // --- УПРАВЛІННЯ МОДАЛЬНИМИ ВІКНАМИ ---
+        function handleGetScriptClick(scriptName) {
+            currentScriptNameForModal = scriptName;
+            overlay.classList.remove('hidden');
+            connectModal.classList.remove('hidden');
+            nicknameInput.value = '';
+            nicknameInput.focus();
+        }
+        function handleOkClick() {
+            connectModal.classList.add('hidden');
+            loadingModal.classList.remove('hidden');
+            setTimeout(() => {
+                loadingModal.classList.add('hidden');
+                successMessage.textContent = `${currentScriptNameForModal} has been successfully connected to your account`;
+                successModal.classList.remove('hidden');
+                launchFireworks();
+            }, 1500);
+        }
+        function handleGotItClick() {
+            overlay.classList.add('hidden');
+            successModal.classList.add('hidden');
+            fireworksContainer.classList.add('hidden');
+            fireworksContainer.style.display = 'none';
+            fireworksContainer.innerHTML = '';
+        }
+        function closeAllModals(e) {
+            if (e.target === overlay) {
+                overlay.classList.add('hidden');
+                connectModal.classList.add('hidden');
+                loadingModal.classList.add('hidden');
+                successModal.classList.add('hidden');
+            }
+        }
+        // --- АНІМАЦІЇ ---
+        function launchFireworks() {
+            fireworksContainer.classList.remove('hidden'); 
+            fireworksContainer.style.display = 'block';
+            const colors = ['#03e9f4', '#f54291', '#00ff7f', '#ff005c', '#8a2be2', '#fde13b'];
+            const numFireworks = 15; 
+            const particlesPerFirework = 30; 
+            for (let i = 0; i < numFireworks; i++) {
+                setTimeout(() => {
+                    const fireworkColor = colors[Math.floor(Math.random() * colors.length)];
+                    const startX = Math.random() * window.innerWidth;
+                    const startY = Math.random() * window.innerHeight * 0.7 + window.innerHeight * 0.1;
+                    const origin = document.createElement('div');
+                    origin.classList.add('firework-origin');
+                    origin.style.left = `${startX}px`;
+                    origin.style.top = `${startY}px`;
+                    origin.style.width = origin.style.height = `${Math.random() * 20 + 10}px`;
+                    origin.style.backgroundColor = fireworkColor;
+                    fireworksContainer.appendChild(origin);
+                    for (let j = 0; j < particlesPerFirework; j++) {
+                        const particle = document.createElement('div');
+                        particle.classList.add('firework');
+                        particle.style.backgroundColor = fireworkColor;
+                        particle.style.left = `${startX}px`;
+                        particle.style.top = `${startY}px`;
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = Math.random() * 80 + 20;
+                        particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+                        particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+                        particle.style.animationDelay = `${Math.random() * 0.1}s`;
+                        fireworksContainer.appendChild(particle);
+                        particle.addEventListener('animationend', () => { particle.remove(); });
+                    }
+                    origin.addEventListener('animationend', () => { origin.remove(); });
+                }, i * 300);
+            }
+            setTimeout(() => {
+                fireworksContainer.classList.add('hidden');
+                fireworksContainer.style.display = 'none';
+                fireworksContainer.innerHTML = ''; 
+            }, numFireworks * 300 + 1000); 
+        }
+        // --- ІНІЦІАЛІЗАЦІЯ ---
+        window.onload = () => { 
+            showHomeScreen();
+            overlay.addEventListener('click', closeAllModals);
+            nicknameInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('ok-btn').click();
+                }
+            });
+        };
+    </script></body></html>
